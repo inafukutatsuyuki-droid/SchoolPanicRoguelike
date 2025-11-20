@@ -11,10 +11,24 @@ namespace SchoolPanicRoguelike.UI
         [SerializeField]
         private int defaultDifficulty = 1;
 
-        public void StartScenario()
+        public void StartZombieScenario()
+        {
+            StartScenario(ScenarioType.Zombie);
+        }
+
+        public void StartTrainingScenario()
+        {
+            StartScenario(ScenarioType.TrainingGoneWrong);
+        }
+
+        private void StartScenario(ScenarioType scenario)
         {
             int seed = (int)System.DateTime.Now.Ticks;
-            GameManager.Instance?.StartRun(seed, defaultDifficulty, gameSceneName);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetScenario(scenario);
+                GameManager.Instance.StartRun(seed, defaultDifficulty, gameSceneName);
+            }
         }
     }
 }

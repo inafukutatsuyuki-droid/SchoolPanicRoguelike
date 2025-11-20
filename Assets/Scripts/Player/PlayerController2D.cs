@@ -19,6 +19,8 @@ namespace SchoolPanicRoguelike.Player
         private Vector2 _lastMoveDirection = Vector2.down;
         private PlayerStats _playerStats;
 
+        public float ExternalSpeedMultiplier { get; set; } = 1f;
+
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
@@ -58,7 +60,7 @@ namespace SchoolPanicRoguelike.Player
 
         private void MoveCharacter()
         {
-            float speed = moveSpeed;
+            float speed = moveSpeed * Mathf.Max(ExternalSpeedMultiplier, 0f);
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 if (_playerStats == null || _playerStats.TryConsumeStamina(staminaCostPerDash * Time.fixedDeltaTime))

@@ -26,6 +26,18 @@ namespace SchoolPanicRoguelike.Debugging
         [SerializeField]
         private Slider difficultySlider;
 
+        [SerializeField]
+        private Dropdown scenarioDropdown;
+
+        [SerializeField]
+        private Slider guardCountSlider;
+
+        [SerializeField]
+        private Slider guardViewDistanceSlider;
+
+        [SerializeField]
+        private Slider guardHearingSlider;
+
         private bool _isOpen;
 
         private void Start()
@@ -57,6 +69,11 @@ namespace SchoolPanicRoguelike.Debugging
             if (difficultySlider != null && GameManager.Instance != null)
             {
                 difficultySlider.value = GameManager.Instance.DifficultyLevel;
+            }
+
+            if (scenarioDropdown != null && GameManager.Instance != null)
+            {
+                scenarioDropdown.value = GameManager.Instance.CurrentScenario == ScenarioType.TrainingGoneWrong ? 1 : 0;
             }
         }
 
@@ -95,6 +112,41 @@ namespace SchoolPanicRoguelike.Debugging
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.SetDifficulty(Mathf.RoundToInt(value));
+            }
+        }
+
+        public void OnScenarioChanged(int index)
+        {
+            if (GameManager.Instance == null)
+            {
+                return;
+            }
+
+            ScenarioType scenario = index == 1 ? ScenarioType.TrainingGoneWrong : ScenarioType.Zombie;
+            GameManager.Instance.SetScenario(scenario);
+        }
+
+        public void OnGuardCountChanged(float value)
+        {
+            foreach (GuardSpawner2D spawner in FindObjectsOfType<GuardSpawner2D>())
+            {
+                spawner.SetGuardCount(Mathf.RoundToInt(value));
+            }
+        }
+
+        public void OnGuardViewDistanceChanged(float value)
+        {
+            foreach (GuardVision2D vision in FindObjectsOfType<GuardVision2D>())
+            {
+                vision.SetViewDistance(value);
+            }
+        }
+
+        public void OnGuardHearingRangeChanged(float value)
+        {
+            foreach (GuardHearing2D hearing in FindObjectsOfType<GuardHearing2D>())
+            {
+                hearing.SetHearingRange(value);
             }
         }
     }
