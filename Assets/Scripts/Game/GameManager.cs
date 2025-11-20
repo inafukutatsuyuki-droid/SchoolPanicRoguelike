@@ -29,6 +29,9 @@ namespace SchoolPanicRoguelike.Game
         [field: SerializeField]
         public GameState CurrentState { get; private set; } = GameState.Title;
 
+        [field: SerializeField]
+        public ScenarioType CurrentScenario { get; private set; } = ScenarioType.Zombie;
+
         public int ZombieKillCount { get; private set; }
 
         public float RunTime { get; private set; }
@@ -67,6 +70,7 @@ namespace SchoolPanicRoguelike.Game
 
             UnityEngine.Random.InitState(CurrentSeed);
 
+            InitializeScenario();
             SceneManager.LoadScene(sceneName);
             OnRunStarted?.Invoke();
         }
@@ -107,6 +111,24 @@ namespace SchoolPanicRoguelike.Game
         public void SetDifficulty(int difficultyLevel)
         {
             DifficultyLevel = Mathf.Max(1, difficultyLevel);
+        }
+
+        public void SetScenario(ScenarioType scenario)
+        {
+            CurrentScenario = scenario;
+        }
+
+        protected virtual void InitializeScenario()
+        {
+            switch (CurrentScenario)
+            {
+                case ScenarioType.TrainingGoneWrong:
+                    // Placeholder for training specific setup.
+                    break;
+                default:
+                    // Default to zombie scenario initialization.
+                    break;
+            }
         }
     }
 }

@@ -19,7 +19,15 @@ namespace SchoolPanicRoguelike.UI
         [SerializeField]
         private Text timerText;
 
+        [SerializeField]
+        private GameObject detectionMeterRoot;
+
         private PlayerStats _playerStats;
+
+        private void OnEnable()
+        {
+            UpdateDetectionMeterVisibility();
+        }
 
         public void BindPlayer(PlayerStats stats)
         {
@@ -67,6 +75,17 @@ namespace SchoolPanicRoguelike.UI
                 int seconds = Mathf.FloorToInt(time % 60f);
                 timerText.text = $"{minutes:00}:{seconds:00}";
             }
+        }
+
+        private void UpdateDetectionMeterVisibility()
+        {
+            if (detectionMeterRoot == null)
+            {
+                return;
+            }
+
+            bool showMeter = GameManager.Instance != null && GameManager.Instance.CurrentScenario == ScenarioType.TrainingGoneWrong;
+            detectionMeterRoot.SetActive(showMeter);
         }
     }
 }
