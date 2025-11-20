@@ -52,6 +52,7 @@ namespace SchoolPanicRoguelike.Enemies
         private float _nextAttackTime;
         private Vector2 _alertTarget;
         private Coroutine _patrolWaitRoutine;
+        private Coroutine _alertRoutine;
 
         private void Awake()
         {
@@ -87,6 +88,7 @@ namespace SchoolPanicRoguelike.Enemies
         {
             _lastSeenTime = Time.time;
             _state = GuardState.Chase;
+            CancelAlertCountdown();
             ReportAttention(attentionScore);
         }
 
@@ -102,7 +104,7 @@ namespace SchoolPanicRoguelike.Enemies
             {
                 _state = GuardState.Alert;
                 _alertTarget = _player != null ? (Vector2)_player.transform.position : transform.position;
-                StartCoroutine(AlertCountdown());
+                StartAlertCountdown();
             }
         }
 
@@ -115,7 +117,7 @@ namespace SchoolPanicRoguelike.Enemies
 
             _state = GuardState.Alert;
             _alertTarget = noisePosition;
-            StartCoroutine(AlertCountdown());
+            StartAlertCountdown();
         }
 
         private void HandlePatrol()
@@ -176,7 +178,12 @@ namespace SchoolPanicRoguelike.Enemies
         private IEnumerator AlertCountdown()
         {
             yield return new WaitForSeconds(alertDuration);
-            _state = GuardState.Patrol;
+            if (_state == GuardState.Alert)
+            {
+                _state = GuardState.Patrol;
+            }
+
+            _alertRoutine = null;
         }
 
         private void TryAttack()
@@ -203,6 +210,21 @@ namespace SchoolPanicRoguelike.Enemies
         {
             patrolPoints = points;
             _currentPatrolIndex = 0;
+        }
+
+        private void StartAlertCountdown()
+        {
+            CancelAlertCountdown();
+            _alertRoutine = StartCoroutine(AlertCountdown());
+        }
+
+        private void CancelAlertCountdown()
+        {
+            if (_alertRoutine != null)
+            {
+                StopCoroutine(_alertRoutine);
+                _alertRoutine = null;
+            }
         }
     }
 }
